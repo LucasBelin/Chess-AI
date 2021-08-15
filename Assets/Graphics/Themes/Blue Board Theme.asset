@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63bb1861f198c184bba3ca8eb9762f89, type: 3}
+  m_Name: Blue Board Theme
+  m_EditorClassIdentifier: 
+  LightSquares:
+    normal: {r: 0.8313726, g: 0.87843144, b: 0.8980393, a: 0}
+    legal: {r: 0.078431375, g: 0.33333334, b: 0.11764706, a: 0.39215687}
+    selected: {r: 0.6117647, g: 0.8705883, b: 0.9294118, a: 0}
+  DarkSquares:
+    normal: {r: 0.49411768, g: 0.627451, b: 0.7058824, a: 0}
+    legal: {r: 0.078431375, g: 0.33333334, b: 0.11764706, a: 0.39215687}
+    selected: {r: 0.45098042, g: 0.74509805, b: 0.8352942, a: 0}
