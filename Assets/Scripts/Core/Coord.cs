@@ -47,6 +47,10 @@ public class Coord {
         return FileNames[fileIndex] + "" + RankNames[rankIndex];
     }
 
+    public static string SquareNameFromIndex(int index) {
+        return FileNames[index % 8] + "" + RankNames[index / 8];
+    }
+
     public static string SquareNameFromCoordinate(Coord coord) {
         return SquareNameFromCoordinate(coord.File, coord.Rank);
     }

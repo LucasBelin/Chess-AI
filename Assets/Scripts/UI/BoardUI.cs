@@ -24,7 +24,6 @@ public class BoardUI : MonoBehaviour {
 	bool showLegalMoves;
 	List<GameObject> legalGOs;
 
-
     private void Awake() {
         CreateBoardUI();
 		legalGOs = new List<GameObject>();
@@ -42,7 +41,7 @@ public class BoardUI : MonoBehaviour {
 			for (int file = 0; file < 8; file++) {
 				// Create square
 				Transform square = GameObject.CreatePrimitive(PrimitiveType.Quad).transform;
-				square.parent = transform;
+				square.SetParent(transform);
 				square.name = rank * 8 + file + "";
 				square.position = PositionFromCoord(file, rank);
 
@@ -53,7 +52,7 @@ public class BoardUI : MonoBehaviour {
 
 				// Create piece sprite renderer for current square
 				SpriteRenderer pieceRenderer = new GameObject("Piece").AddComponent<SpriteRenderer>();
-				pieceRenderer.transform.parent = square;
+				pieceRenderer.transform.SetParent(square);
 				pieceRenderer.transform.position = PositionFromCoord(file, rank, pieceDepth);
 				pieceRenderer.transform.localScale = Vector3.one * 100 / (2000 / 13f);
 				squarePieceRenderers[file, rank] = pieceRenderer;

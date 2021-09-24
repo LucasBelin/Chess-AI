@@ -14,8 +14,7 @@ public class GameMaster : MonoBehaviour {
     Player blackPlayer;
     Player playerToMove;
 
-    List<Move> movesPlayed;
-    Board board;
+    public Board board;
     [SerializeField] BoardUI boardUI;
 
     [HideInInspector] public int GameSeed;
@@ -51,7 +50,6 @@ public class GameMaster : MonoBehaviour {
 
         GameStateText.text = "";
 
-        movesPlayed = new List<Move>();
         board = new Board();
         board.LoadPosition(StartingPosition);
         CurrentFenText.text = StartingPosition;
@@ -115,7 +113,6 @@ public class GameMaster : MonoBehaviour {
 
     void OnMoveChosen(Move move, bool animate) {
         board.MakeMove(move);
-        movesPlayed.Add(move);
         boardUI.OnMoveMade(board, move, animate);
         UpdateCurrentFen();
 

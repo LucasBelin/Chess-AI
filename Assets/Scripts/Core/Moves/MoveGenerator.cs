@@ -14,7 +14,7 @@ public class MoveGenerator {
     int enemyColor;
     bool whiteToMove;
 
-    ulong enemyAttacks;
+    public ulong enemyAttacks;
     ulong blockers;
 
     bool inCheck;
@@ -365,11 +365,11 @@ public class MoveGenerator {
                 int piece = board.Squares[targets[i]];
                 if (piece != Piece.None) {
                     if (Piece.IsColor(piece, enemyColor)) {
-                        moves.Add(new Move(friendlyKingPos, targets[i]));
+                        moves.Add(new Move(friendlyKingPos, targets[i], Piece.King, true));
                     }
                 }
                 else {
-                    moves.Add(new Move(friendlyKingPos, targets[i]));
+                    moves.Add(new Move(friendlyKingPos, targets[i], Piece.King));
                 }
             }
         }
@@ -381,7 +381,7 @@ public class MoveGenerator {
                 if ((travelSquaresMask & enemyAttacks) == 0) {
                     if (board.Squares[castlingSquares[0]] == Piece.None &&
                         board.Squares[castlingSquares[1]] == Piece.None) {
-                        moves.Add(new Move(friendlyKingPos, castlingSquares[1], Move.Flag.Castling));
+                        moves.Add(new Move(friendlyKingPos, castlingSquares[1], Piece.King, false, Move.Flag.Castling));
                     }
                 }
             }
@@ -392,7 +392,7 @@ public class MoveGenerator {
                     if (board.Squares[castlingSquares[0]] == Piece.None &&
                         board.Squares[castlingSquares[1]] == Piece.None &&
                         board.Squares[castlingSquares[2]] == Piece.None) {
-                        moves.Add(new Move(friendlyKingPos, castlingSquares[1], Move.Flag.Castling));
+                        moves.Add(new Move(friendlyKingPos, castlingSquares[1], Piece.King, false, Move.Flag.Castling));
                     }
                 }
             }
@@ -430,14 +430,14 @@ public class MoveGenerator {
                     //Not in check or move blocks the check
                     if (!inCheck || ((restrictedMoveMask >> target) & 1) > 0) {
                         if (oneStepFromPromotion) GeneratePromotionMoves(pawnPos, target);
-                        else moves.Add(new Move(pawnPos, target));
+                        else moves.Add(new Move(pawnPos, target, Piece.Pawn));
 
                         //2 forward
                         if (rank == startRank) {
                             int twoForwardTarget = target + forwardOffset;
                             if (board.Squares[twoForwardTarget] == Piece.None) {
                                 if (!inCheck || ((restrictedMoveMask >> twoForwardTarget) & 1) > 0) {
-                                    moves.Add(new Move(pawnPos, twoForwardTarget, Move.Flag.PawnTwoForward));
+                                    moves.Add(new Move(pawnPos, twoForwardTarget, Piece.Pawn, false, Move.Flag.PawnTwoForward));
                                 }
                             }
                         }
@@ -448,7 +448,7 @@ public class MoveGenerator {
                             int twoForwardTarget = target + forwardOffset;
                             if (board.Squares[twoForwardTarget] == Piece.None) {
                                 if (!inCheck || ((restrictedMoveMask >> twoForwardTarget) & 1) > 0) {
-                                    moves.Add(new Move(pawnPos, twoForwardTarget, Move.Flag.PawnTwoForward));
+                                    moves.Add(new Move(pawnPos, twoForwardTarget, Piece.Pawn, false, Move.Flag.PawnTwoForward));
                                 }
                             }
                         }
@@ -471,7 +471,7 @@ public class MoveGenerator {
                         //Not in check or move removes the check
                         if (!inCheck || ((restrictedMoveMask >> target) & 1) > 0) {
                             if (oneStepFromPromotion) GeneratePromotionMoves(pawnPos, target);
-                            else moves.Add(new Move(pawnPos, target));
+                            else moves.Add(new Move(pawnPos, target, Piece.Pawn, true));
                         }
                     }
                 }
@@ -485,7 +485,7 @@ public class MoveGenerator {
                         if (target == enPassantSquare) {
                             if (!inCheck || ((pawnRestrictedMoveMask >> target) & 1) > 0) {
                                 if (!InCheckAfterEnPassant(pawnPos, target, epCapturedPawnSquare))
-                                    moves.Add(new Move(pawnPos, target, Move.Flag.EnPassantCapture));
+                                    moves.Add(new Move(pawnPos, target, Piece.Pawn, true, Move.Flag.EnPassantCapture));
                             }
                         }
                     }
@@ -495,10 +495,10 @@ public class MoveGenerator {
     }
 
     void GeneratePromotionMoves(int from, int to) {
-        moves.Add(new Move(from, to, Move.Flag.PromoteToQueen));
-        moves.Add(new Move(from, to, Move.Flag.PromoteToKnight));
-        moves.Add(new Move(from, to, Move.Flag.PromoteToBishop));
-        moves.Add(new Move(from, to, Move.Flag.PromoteToRook));
+        moves.Add(new Move(from, to, Piece.Pawn, false, Move.Flag.PromoteToQueen));
+        moves.Add(new Move(from, to, Piece.Pawn, false, Move.Flag.PromoteToKnight));
+        moves.Add(new Move(from, to, Piece.Pawn, false, Move.Flag.PromoteToBishop));
+        moves.Add(new Move(from, to, Piece.Pawn, false, Move.Flag.PromoteToRook));
     }
 
     void GenerateKnightMoves() {
@@ -515,13 +515,13 @@ public class MoveGenerator {
                 if (piece != Piece.None) {
                     if (Piece.IsColor(piece, enemyColor)) {
                         if (!inCheck || ((restrictedMoveMask >> targets[j]) & 1) != 0) {
-                            moves.Add(new Move(knightPos, targets[j]));
+                            moves.Add(new Move(knightPos, targets[j], Piece.Knight, true));
                         }
                     }
                 }
                 else {
                     if (!inCheck || ((restrictedMoveMask >> targets[j]) & 1) != 0) {
-                        moves.Add(new Move(knightPos, targets[j]));
+                        moves.Add(new Move(knightPos, targets[j], Piece.Knight));
                     }
                 }
             }
@@ -532,7 +532,7 @@ public class MoveGenerator {
         PieceList bishops = board.Bishops[friendlyIndex];
         for (int i = 0; i < bishops.Count; i++) {
             int bishopPos = bishops[i];
-            GenerateSlidingMoves(bishopPos, 4, 8);
+            GenerateSlidingMoves(bishopPos, Piece.Bishop, 4, 8);
         }
     }
 
@@ -540,7 +540,7 @@ public class MoveGenerator {
         PieceList rooks = board.Rooks[friendlyIndex];
         for (int i = 0; i < rooks.Count; i++) {
             int rookPos = rooks[i];
-            GenerateSlidingMoves(rookPos, 0, 4);
+            GenerateSlidingMoves(rookPos, Piece.Rook, 0, 4);
         }
     }
 
@@ -548,11 +548,11 @@ public class MoveGenerator {
         PieceList queens = board.Queens[friendlyIndex];
         for (int i = 0; i < queens.Count; i++) {
             int queenPos = queens[i];
-            GenerateSlidingMoves(queenPos, 0, 8);
+            GenerateSlidingMoves(queenPos, Piece.Queen, 0, 8);
         }
     }
 
-    void GenerateSlidingMoves(int piecePos, int startDir, int endDir) {
+    void GenerateSlidingMoves(int piecePos, int pieceType, int startDir, int endDir) {
         bool isPinned = IsPinned(piecePos);
         if (inCheck && isPinned) {
             return;
@@ -575,13 +575,13 @@ public class MoveGenerator {
                     }
                     else {
                         if (!inCheck || ((restrictedMoveMask >> target) & 1) != 0)
-                            moves.Add(new Move(piecePos, target));
+                            moves.Add(new Move(piecePos, target, pieceType, true));
                         break;
                     }
                 }
                 else {
                     if (!inCheck || ((restrictedMoveMask >> target) & 1) != 0) {
-                        moves.Add(new Move(piecePos, target));
+                        moves.Add(new Move(piecePos, target, pieceType));
                     }
                 }
             }

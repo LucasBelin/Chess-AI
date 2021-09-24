@@ -25,6 +25,7 @@ public class Board {
 
     public uint CurrentGameState;
     public Stack<uint> GameStateHistory;
+    public List<string> MovesPlayed;
 
     PieceList GetPieceList(int pieceType, int colorIndex) {
         return AllPieceLists[colorIndex * 8 + pieceType];
@@ -95,6 +96,8 @@ public class Board {
     }
 
     public void Initialize() {
+        MovesPlayed = new List<string>();
+
         Squares = new int[64];
         FiftyMoveCounter = 0;
         Blockers = 0;
@@ -142,6 +145,8 @@ public class Board {
         int moveFlag = move.MoveFlag;
         bool isPromotion = move.IsPromotion;
         bool isEnPassant = moveFlag == Move.Flag.EnPassantCapture;
+
+        MovesPlayed.Add(move.Notation);
 
         // Handle captures
         CurrentGameState |= (ushort)(capturedPieceType << 8);
@@ -327,6 +332,12 @@ public class Board {
         PlyCount--;
 
         CalculateBlockers();
+    }
+
+    public string GamePGN {
+        get {
+            return string.Join(" ", MovesPlayed);
+        }
     }
 }
 
